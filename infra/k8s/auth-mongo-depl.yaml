@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth2-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth2-mongo
+  template:
+    metadata:
+      labels:
+        app: auth2-mongo
+    spec:
+      containers:
+        - name: auth2-mongo
+          image: mongo
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth2-mongo-srv
+spec:
+  #type ==> default ClusterIP
+  type: ClusterIP
+  selector:
+    app: auth2-mongo
+  ports:
+    - name: auth2-mongo-db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

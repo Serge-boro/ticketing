@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth2-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth2
+  template:
+    metadata:
+      labels:
+        app: auth2
+    spec:
+      containers:
+        - name: auth2
+          image: serhii/auth2:latest
+          imagePullPolicy: Never
+          env:
+            - name: MONGO_URL
+              value: 'mongodb://auth2-mongo-srv:27017/auth2Project2'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  #example: kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
+                  name: jwt-secret
+                  key: JWT_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth2-srv
+spec:
+  #type ==> default ClusterIP
+  type: ClusterIP
+  selector:
+    app: auth2
+  ports:
+    - name: auth2
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

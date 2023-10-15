@@ -1,0 +1,371 @@
+https://ticketing.dev/api/users/currentuser
+https://ticketing.dev/auth/signup
+
+typescript
+1. npm i typescript ts-node-dev express @types/express     
+2. tsc --init  // - tsc config file
+  "scripts": {
+    "start": "ts-node-dev --poll src/index.ts"
+  },
+
+#################################################
+#####JWT##############JWT################
+http://base64decode.org
+https://jwt.io/
+
+
+
+##################################################
+DOCKER:
+
+1. docker build - t [name image] .
+2. docker run [name image]
+3. docker run -it [name image] sh
+4. docker ps
+5. docker exec -it [container id] sh
+6. docker logs [container id]
+
+
+KUBERNETIS:
+
+1. kubectl get pods
+2. kubectl exec -i [pod_name] sh
+3. kubectl logs [pod_name]
+4. kubectl delete pod [pod_name]
+5. kubectl apply -f [name.yaml]
+6. kubectl describe pods [pod_name]
+
+Restart deployment
+
+1. kubectl apply -f infra/k8s/
+2. kubectl delete -f infra/k8s/
+
+##Deployment
+1. kubectl get deployments
+2. kubectl describe deployment [depl_name]
+3. kubectl apply -f [deploy yml file name]
+4. kubectl delete deployment [depl_name]
+
+#Restart deployment
+5. docker build -t [name_image]
+6. docker push [name_image] 
+7. kubectl rollout restart deployment [name_deployment_pod]
+
+##Service
+1. kubectl apply -f [service yml file name]
+2. kubectl get services
+3. kubectl describe service [service yml file name]
+4. kubectl describe pod [name-pod]
+
+##NAMESPACE#####_connecter between cluster[pods] and ingress_nginx###########
+1. kubectl get namespace  // checking namespace inside ingress_nginx
+2. kubectl get services -n ingress-nginx //checking service inside ingress_nginx
+*(http://NAMESPACESERVICE[kubectl get services -n ingress-nginx ].NAMEOFSERVICE[kubectl get namespace].svc.cluster.local)
+
+spec:
+  containers:
+    - name: posts
+      image: cygnet/posts:0.0.1
+      imagePullPolicy: Never
+
+
+
+code ~/.zshrc
+alias k="kubectl"
+
+#########INGRESS_NGINX#####################################
+LoadBalancer (prod) ot NodePort (dev preferently) ==> outSideWorld host
+
+Use LoadBalancer ==> creating ingress-nginx config yaml file
+Kubectl ingress-nginx apply library:
+https://kubernetes.github.io/ingress-nginx/deploy/
+##
+command to install ingress-nginx:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+##
+
+1. kubectl apply - f [name yaml ingress-nginx config file]
+
+###skaffold#########
+1. skaffold dev
+
+
+##############
+localhost change file
+code C:\Windows\System32\drivers\etc
+
+browser => thisisunsafe
+
+####################
+KUBERNETES/JWS
+kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
+
+kubectl get secrets
+
+######TESTING#########
+--save-dev - if we dont want install dependency inside image: dockerfile ==> RUN npm install --omit=dev
+
+npm i --save-dev 
+@types/jest 
+@types/supertest 
+jest 
+ts-jest 
+supertest 
+mongodb-memory-server
+
+
+######UI_NEXT.JS#########
+npm i react react-dom next
+
+npm run [package.json script start]
+
+
+#####Holder Service#############
+####NPM####NPM########
+https://www.npmjs.com/
+serhii-boro
+SergeBoro1983!!!
+
+1. New organization on https://www.npmjs.com/  (ticketingpr)
+2. New common folder ==> npm init -y
+3. common folder ==> package.json ==> [npm organization name] (ticketingpr) - test
+{
+  "name": "@ticketingpr/common",
+  "version": "1.0.0",
+....}
+4. should be login in npm ==> npm login
+5. in common folder to npm organization ==>
+  5.1. git init 
+  5.2. git add .
+  5.3  git commit -m "initial commit"
+  5.4. npm publish --access public
+6. in common folder ==>
+- tsc --init   
+- npm i typescript del-cli --save-dev
+7. tsconfig file:
+- "declaration": true
+- "outDir": "./build", 
+8. common folder ==> ####package.json ######==> main, types, files
+{
+  "name": "@ticketingpr/common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/index.js",
+  "types": "./build/index.d.js",
+  "files": [
+    "build/**/*"
+  ],
+  "scripts": {
+    "clean": "del ./build/*",
+    "build": "npm run clean && tsc",
+    "pub": "git add . && git commit -m \"Updates\" npm version patch && npm run build && npm publish"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "del-cli": "^5.1.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@types/cookie-session": "^2.0.45",
+    "@types/express": "^4.17.18",
+    "@types/jsonwebtoken": "^9.0.3",
+    "cookie-session": "^2.0.0",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
+9. gitignore with build and node_modules
+10. index.ts file making "export"
+11. npm i all needs library in common folder
+12. tsc //inside common ==> make build folder 
+13. npm run pub ==> package.json => scripts {...}
+14. inside other folders ==>  npm i @ticketingpr/common
+15. In case we updated common folder:
+common==> npm run pub ==> auth ==>   npm install  @ticketingpr/common // npm update @ticketingpr/common
+
+###################################################
+What is NATS
+Software applications and services need to exchange data.
+==> nats-striming docker
+
+#####################
+NATS Streaming server
+
+kubectl port-forward [name pod] [port local]: [port pod] 
+
+#name = monitoring ==> nats.depl.yaml
+kubectl port-forward nats2-depl-f656fddb8-69mbc  8222:8222
+
+http://localhost:8222/streaming
+http://localhost:8222/streaming/channelsz?subs=1
+
+######################################################
+
+NATS==> NODE==> ticketing
+
+1.create ticket-created-publish class extends from Publish class and publish function inside 
+2. Use publish() in new (/route) file TicketCreatedPublish to get data
+3. create natsConnection class to connect to NATS function "get client()" this._client = nats.connect... (_client instead nats as nats-test folder)
+or
+natsWrapper (connection to NATS) ==> "new.ts" we use TicketCreatedPublish class amd function publish
+
+class(nats [connector]).publish(data):
+ await new TicketCreatedPublisher(natsWrapper.client).publish({...})
+
+#############
+ NODE.js
+ EXEMPLE
+ const getAllUsers = async (req, res) => {
+  const users = await User.find({ role: 'user' })
+    .select('-password')
+    .populate('products')
+
+  res.status(200).json({ users })
+}
+
+###
+enum OrderStatus {
+Created = 'created',
+ Cancelled = 'cancelled',
+AwaitingPaymnet = 'awaiting: payment',
+Complete = 'complete',
+}
+
+    status: {
+      type: String,
+      required: true,
+      #
+      enum: Object.values(OrderStatus),
+      #
+      default: OrderStatus.Created,
+    },
+
+ const existingOrder = await Order.findOne({
+      ticket: ticket,
+      status: {
+        # $in - avoid cases
+        $in: [
+          OrderStatus.Created,
+          OrderStatus.AwaitingPaymnet,
+          OrderStatus.Complete,
+        ],
+        #
+      },
+    })
+
+    UserSchema.pre('save', async function () {
+  // console.log(this.modifiedPaths())
+  // if (!this.isModified('password')) return // in case user.save()
+  const salt = await bcrypt.genSalt(10)
+  this.password = await bcrypt.hash(this.password, salt)
+})
+
+// UserSchema.methods.createJWT = function () {
+//   return jwt.sign(
+//     { userId: this._id, userName: this.name },
+//     process.env.JWT_SECRET,
+//     { expiresIn: process.env.JWT_LIFETIME }
+//   )
+// }
+
+UserSchema.methods.comparePassword = async function (userPassword) {
+  const validatorPassword = await bcrypt.compare(userPassword, this.password)
+  return validatorPassword
+}
+
+"return !!existingOrder" - first "!" return true with null, second "!!" return false OR if the order will defind - first "!" - false, seconf - "!!" - true
+
+//turned on time to string
+expiresAt: order.expiresAt.toISOString(),
+
+
+interface TicketCreatedEvent {
+  subject: Subjects.TicketCreated
+  #
+  data: {
+    id: string
+    title: string
+    price: number
+    userId: string
+  }
+  #
+}
+onMessage(data: TicketCreatedEvent#['data']#, msg: Message) {}
+
+
+
+####stripe
+SergeBoro1983!!!
+
+###############################
+NEXT.js:
+
+#table########
+      <table className='table'>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ticket.map((item) => {
+            return (
+              <tr key={item.id}>
+                <td>{item.title}</td>
+                <td>{item.price}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+####################
+const doRequest = async () => {
+    try {
+      setIsErrors(null)
+      const { data } = await axios[method](url, body)
+
+      if (onSuccess && data) {
+        onSuccess(data)
+      }
+      return data
+    } catch (err) {
+      setIsErrors(
+        <div className='alert alert-danger'>
+          <h4>...Oooops</h4>
+          <ul className='my-0'>
+            {err.response &&
+              err.response.data.errors.map((item) => {
+                return <li key={item.message}>{item.message}</li>
+              })}
+          </ul>
+        </div>
+      )
+      //#1
+      throw err
+    }
+  }
+
+  return { doRequest, isErrors }
+} ==>
+#==>
+const { doRequest, isErrors } = useRequest({
+    url: '/api/ticket',
+    method: 'post',
+    body: {
+      title: isTicket.title,
+      price: isTicket.price,
+    },
+    onSuccess: () => Router.push('/'),
+  })
+  ######################
+  import Link from 'next/link'
+
+<Link href='/ticket/[ticketId]' as={`/ticket/${item.id}`}>
+  View
+</Link>
+
+

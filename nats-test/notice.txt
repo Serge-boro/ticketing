@@ -1,0 +1,7 @@
+ nats-depl.yaml: ==> port:
+ kubectl port-forward nats2-depl-f656fddb8-69mbc  8222:8222
+ kubectl port-forward nats2-depl-f656fddb8-69mbc  4222:4222
+
+package.json ==> 
+npm run publish
+npm run listen

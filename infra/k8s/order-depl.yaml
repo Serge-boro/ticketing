@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order2-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order2
+  template:
+    metadata:
+      labels:
+        app: order2
+    spec:
+      containers:
+        - name: order2
+          image: serhii/order2:latest
+          imagePullPolicy: Never
+          env:
+            - name: MONGO_URL
+              value: 'mongodb://order2-mongo-srv:27017/order2Project2'
+            - name: NATS_URL
+              value: 'http://nats2-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  #example: kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
+                  name: jwt-secret
+                  key: JWT_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order2-srv
+spec:
+  #type ==> default ClusterIP
+  type: ClusterIP
+  selector:
+    app: order2
+  ports:
+    - name: order2
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
